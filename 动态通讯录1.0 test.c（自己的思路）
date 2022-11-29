@@ -1,0 +1,66 @@
+#define _CRT_SECURE_NO_WARNINGS 1
+
+#include"contact.h"
+
+void menu()
+{
+	printf("*******************************************\n");
+	printf("****  1.add                    2.del     **\n");
+	printf("****  3.search                 4.modify  **\n");
+	printf("****  5.show                   6.sort    **\n");
+	printf("****  0.exit                             **\n");
+	printf("*******************************************\n");
+}
+
+int main()
+{
+	int input = 0;
+	//用通讯录指针来维护动态内存，柔性数组
+	struct contact* con = calloc(1, sizeof(struct contact));
+	if (con == NULL)
+	{
+		return 0;
+	}
+	do
+	{
+		menu();
+		printf("请选择:>");
+		scanf("%d", &input);
+		switch (input)
+		{
+		case ADD:
+			//因为在函数内部增加通讯录空间，需要用con维护，那con的内容就要改变，所以传地址
+			AddContact(&con);
+			break;
+		case DEL:
+			//因为在函数内部调整空间大小了，所以需要传指针
+			DelContact(&con);
+			break;
+		case SEARCH:
+			//直接使用不调整空间，则不需要传地址
+			SearchContact(con);
+			break;
+		case MODIFY:
+			//不调整空间
+			ModifyContact(con);
+			break;
+		case SHOW:
+			//不调整空间
+			ShowContact(con);
+			break;
+		case SORT:
+			//不调整空间
+			SortContact(con);
+			break;
+		case EXIT:
+			//空间销毁，需要传地址
+			DestroyContact(&con);
+			printf("退出\n");
+			break;
+		default:
+			printf("输入错误\n");
+			break;
+		}
+	} while (input);
+	return 0;
+}
