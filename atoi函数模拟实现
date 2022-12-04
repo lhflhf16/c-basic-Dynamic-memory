@@ -1,0 +1,61 @@
+#include<stdio.h>
+
+char* FindSpace(const char* str)
+{
+	while (*str == '\n' || *str == '\t' || *str == '\v' || *str == '\f' || *str == '\r' || *str == ' ')
+	{
+		str++;
+	}
+	return (char*)str;
+}
+int Power(int n)
+{
+	if (n == 0)
+	{
+		return 1;
+	}
+	int i = Power(n - 1);
+	return i * 10;
+}
+int my_atoi(const char* str)
+{
+	//先找到第一个非空字符 '\n','\t','v','f','r',' '，返回该处地址
+	char* tmp = FindSpace(str);
+
+	//保存初始的数字位置
+	char* tmp_init_copy = tmp;
+
+	//1.第一个非空字符不为数字，返回0
+	if (*tmp < 48 || *tmp > 57)
+	{
+		return 0;
+	}
+
+	//2.第一个非空字符为数字
+	while (*tmp >= 48 && *tmp <= 57)
+	{
+		//找数字后面的第一个非数字字符
+		tmp++;
+	}
+	//数字个数
+	int n = tmp - tmp_init_copy;
+
+	int i = 0;
+	int sum = 0;
+	for (i = n - 1; i >= 0; i--)
+	{
+		//'1'-'0'=1; Power(i)是10的i次方
+		//123
+		//（'1'-'0'） * 10^2 + ('2'-'0') * 10^1 + ('3'-'0') * 10^0
+		sum = sum + (*tmp_init_copy - '0')*Power(i);
+		*tmp_init_copy++;
+	}
+	return sum;
+}
+int main()
+{
+	char ch[] = " 9123 af45";
+	int i = my_atoi(ch);
+	printf("%d\n", i);
+	return 0;
+}
