@@ -1,0 +1,57 @@
+#include<stdio.h>
+#include<stdlib.h>
+int* Find_single(int* arr1, int* sz)
+{
+	int i = 0;
+	int j = 0;
+	int sum = 0;
+	//开辟动态内存，不能开辟0字节的空间（不符合c语言标准）
+	int* ptr = (int*)malloc(sizeof(int));
+	if (!ptr)
+	{
+		perror("malloc");
+	}
+	for (i = 0; i < *sz; i++)
+	{
+		for (j = 0; j < *sz; j++)
+		{
+			//arr1[i]如果于除了自己之外的其他值相等则，跳出当前for循环，对比arr1[i+1]
+			if ((arr1[i] == arr1[j]) && (i != j))
+			{
+				break;
+			}
+		}
+		//说明arr1[i]只有一个,这时将动态内存空间改为4字节储存arr1[i]
+		if (j == *sz)
+		{
+			sum++;
+			int* tmp = (int*)realloc(ptr, sum*sizeof(int));
+			if (tmp)
+			{
+				ptr = tmp;
+			}
+			//将arr1[i]存入动态空间
+			ptr[sum - 1] = arr1[i];
+		}
+	}
+	//&sz作为参数，并且将动态空间中有多少的数的个数保存到外部的sz中
+	*sz = sum;
+	//将动态空间的地址返回，由外部的指针来维护
+	return ptr;
+}
+int main()
+{
+	int arr1[] = { 0 ,1 ,2 ,3 ,4 ,5 ,6 ,1 ,9 ,10 ,2 ,3 ,4 ,5 ,6 ,7 ,8 };
+	int sz = sizeof(arr1) / sizeof(arr1[0]);
+	//&sz是希望通过地址将数据修改到sz中储存
+	int* p = Find_single(arr1,&sz);
+	int i;
+	for (i = 0; i < sz; i++)
+	{
+		printf("%d ", p[i]);
+	}
+	//释放动态内存
+	free(p);
+	p = NULL;
+	return 0;
+}
